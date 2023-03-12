@@ -1,0 +1,2 @@
+Python\python.exe -m pip install
+Python\python.exe Project_NTO-main\manage.py runserver

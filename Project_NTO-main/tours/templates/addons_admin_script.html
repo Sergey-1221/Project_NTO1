@@ -1,0 +1,84 @@
+<script type="text/javascript">
+{% if settings.dynamic_date %}
+	var night = document.getElementById("id_night");
+	var date_of_stay = document.getElementById("id_date_of_stay");
+	var date_of_exit = document.getElementById("id_date_of_exit");
+
+	var date = new Date();
+	var day = 86400000
+
+	date_exit = new Date(Date.parse(date)+day*1);
+	function str_to_date(s) {
+		//date_exit.setDate(date.getDate() + 100);
+		s = s.split(".")
+		d = new Date(s[2], s[1]-1, s[0]);
+
+		return d
+	}
+	function edit_month(month){
+		month = month+1;
+		if (month < 10){
+			month = "0"+month
+		}
+		return month
+	}
+
+	function edit_night(num) {
+		//date_exit.setDate(date.getDate() + 100);
+		date_exit = new Date(Date.parse(str_to_date(date_of_stay.value))+day*num);
+		
+		date_of_exit.value = date_exit.getDate()+"."+edit_month(date_exit.getMonth())+"."+date_exit.getFullYear();
+	}
+	//Добавляем даты по умолчанию 
+	date_of_stay.value = date.getDate()+"."+edit_month(date.getMonth())+"."+date.getFullYear();
+	edit_night(night.value);
+	night.oninput = function() {
+	    x = night.value;
+	    if(x === ""){
+	    	
+	    } else if (x > 0){
+	    	edit_night(x);
+	    }
+	    else {
+	    	night.value = 1;
+	    }
+	};
+
+    date_of_exit.onblur = function() {
+    	setTimeout(function(){ 
+    		//date_exit = new Date(date_of_exit.value);
+    		x = str_to_date(date_of_exit.value) - str_to_date(date_of_stay.value);
+    		if (x/day > 0){
+    			night.value = x/day;
+    		} else {
+    			edit_night(1);
+    			night.value = 1;
+    		}
+   		}, 500);  
+	}
+
+	date_of_stay.onblur = function() {
+    	setTimeout(function(){ 
+    		//date_exit = new Date(date_of_exit.value);
+    		x = str_to_date(date_of_exit.value) - str_to_date(date_of_stay.value);
+    		if (x/day > 0){
+    			night.value = x/day;
+    		} else {
+    			date = new Date(Date.parse(str_to_date(date_of_exit.value))-day);
+    			date_of_stay.value = date.getDate()+"."+edit_month(date.getMonth())+"."+date.getFullYear();
+    			night.value = 1;
+    		}
+   		}, 500);  
+	}
+	
+	//date_of_exit.addEventListener('input', () => { alert(5); });
+	/*
+	date_of_stay.oninput = function() {
+	    console.log(date_of_stay.value);
+	};
+	date_of_exit.oninput = function() {
+	    console.log(date_of_exit.value);
+	};
+	*/
+{% endif %}
+</script>
